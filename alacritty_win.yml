@@ -1,0 +1,53 @@
+shell:
+  program: /Windows/System32/wsl.exe ~ -d Ubuntu-20.04
+
+font:
+  normal:
+    family: Ricty Diminished
+  bold:
+    family: Ricty Diminished
+  size: 16.0
+
+# Colors (Iceberg Dark)
+colors:
+  # Default colors
+  primary:
+    background: '#161821'
+    foreground: '#d2d4de'
+
+  # Normal colors
+  normal:
+    black:   '#161821'
+    red:     '#e27878'
+    green:   '#b4be82'
+    yellow:  '#e2a478'
+    blue:    '#84a0c6'
+    magenta: '#a093c7'
+    cyan:    '#89b8c2'
+    white:   '#c6c8d1'
+
+  # Bright colors
+  bright:
+    black:   '#6b7089'
+    red:     '#e98989'
+    green:   '#c0ca8e'
+    yellow:  '#e9b189'
+    blue:    '#91acd1'
+    magenta: '#ada0d3'
+    cyan:    '#95c4ce'
+    white:   '#d2d4de'
+
+window:
+  decorations: full         # ボーダーとタイトルバーを表示する
+	startup_mode: Fullscreen  # フルスクリーンで起動する
+
+background_opacity: 0.7    # 背景を透過させる
+
+mouse:
+  double_click: { threshold: 300 }
+  triple_click: { threshold: 300 }
+  hide_when_typing: false
+
+mouse_bindings:
+  - { mouse: Left,  mods: Shift, action: Copy }
+  - { mouse: Right, mods: Shift, action: Paste }

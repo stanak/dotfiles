@@ -1,7 +1,9 @@
 filetype off
+set shell=/bin/bash
 set encoding=utf-8
 set fileformats=unix,dos,mac
 set fileencodings=ucs-bom,utf-8,iso-2022-jp,eucjp-ms,euc-jp,sjis,cp932,latin-1
+set nofixendofline
 scriptencoding utf-8
 set helplang=ja
 let g:vim_indent_cont=3
@@ -10,6 +12,14 @@ let g:vim_indent_cont=3
 augroup reload-vimrc
   autocmd!
   autocmd BufWritePost *vimrc source $MYVIMRC | edit! $MYVIMRC
+augroup END
+
+" 閉じタグ入力自動補完
+augroup MyTagComp
+  autocmd!
+  autocmd Filetype xml inoremap <buffer> </ </<C-x><C-o><Esc>V=
+  autocmd Filetype html inoremap <buffer> </ </<C-x><C-o><Esc>V=
+  autocmd Filetype vue inoremap <buffer> </ </<C-x><C-o><Esc>V=
 augroup END
 
 """ plugins{{{
@@ -31,35 +41,21 @@ call plug#begin('~/.vim/plugged')
   Plug 'mattn/learn-vimscript'
 
   " library
-  Plug 'Shougo/vimproc.vim',
-        \ { 'dir': '~/.vim/plugged/vimproc.vim',
-        \   'do': 'make'}
+  "Plug 'Shougo/vimproc.vim',
+  "      \ { 'dir': '~/.vim/plugged/vimproc.vim',
+  "      \   'do': 'make'}
 
-  Plug 'Shougo/denite.nvim'
-  Plug 'h1mesuke/unite-outline'
   Plug 'Shougo/neoyank.vim'
   Plug 'Shougo/neomru.vim'
-  Plug 'Shougo/vimshell'
-  Plug 'Shougo/neocomplete'
-  Plug 'Shougo/neosnippet'
-  Plug 'Shougo/neosnippet-snippets'
-  if has('nvim')
-    Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
-  else
-    Plug 'Shougo/deoplete.nvim'
-    Plug 'roxma/nvim-yarp'
-    Plug 'roxma/vim-hug-neovim-rpc'
-  endif
-  Plug 'zchee/deoplete-jedi'
+  "Plug 'Shougo/neosnippet'
+  "Plug 'Shougo/neosnippet-snippets'
+  Plug 'neoclide/coc.nvim', {'branch': 'release'}
 
   " colorscheme
   Plug 'itchyny/lightline.vim'
   Plug 'cocopon/iceberg.vim'
 
   "python
-  Plug 'davidhalter/jedi-vim',
-        \ { 'for': 'python',
-        \   'do': 'pip install jedi'}
   Plug 'Vimjas/vim-python-pep8-indent',
   Plug 'msmhrt/py3venv.vim',
 
@@ -68,15 +64,15 @@ call plug#begin('~/.vim/plugged')
   Plug 'junegunn/vim-easy-align'
 
 
-  Plug 'w0rp/ale'
+  "Plug 'w0rp/ale'
   Plug 'Yggdroot/indentLine'
   Plug 'bronson/vim-trailing-whitespace'
-  Plug 'tpope/vim-fugitive'
+  Plug 'tyru/open-browser.vim'
+  Plug 'tyru/open-browser-github.vim'
 
-  " syntax
-  Plug 'tpope/vim-markdown'
-  Plug 'posva/vim-vue'
-
+  " fzf-preview
+  Plug 'junegunn/fzf'
+	Plug 'lambdalisue/gina.vim'
 
 call plug#end()
 filetype plugin indent on
@@ -86,6 +82,8 @@ filetype plugin indent on
 set t_Co=256
 set background=dark
 set termguicolors
+let &t_8f = "\<Esc>[38;2;%lu;%lu;%lum"
+let &t_8b = "\<Esc>[48;2;%lu;%lu;%lum"
 syntax enable
 colorscheme iceberg
 """ }}}
@@ -100,7 +98,7 @@ augroup END
 "ファイル保存ダイアログの初期ディレクトリをバッファファイル位置に設定
 set browsedir=buffer
 "クリップボードをWindowsと連携
-set clipboard=unnamed,unnamedplus,autoselect
+set clipboard=unnamed,unnamedplus
 "変更中のファイルでも、保存しないで他のファイルを表示
 set hidden
 "カーソルを行頭、行末で止まらないようにする
@@ -135,6 +133,25 @@ set mouse=a
 
 " キーコードはすぐにタイムアウト。マッピングはタイムアウトしない
 set notimeout ttimeout ttimeoutlen=200
+
+" ambiwidthを上書きする主に二文字分を取る全角記号対策
+" 環境変えたら何も変えずに直ったので備忘録に置いとく
+" setcellwidths([])
+
+" Windows Subsystem for Linux で、ヤンクでクリップボードにコピー
+if system('uname -a | grep microsoft') != ''
+  augroup myYank
+    autocmd!
+    autocmd TextYankPost * :call system('echo '.shellescape(join(v:event.regcontents, "\<CR>")).' | clip.exe')
+  augroup END
+endif
+
+" %による対応タグ、ブレースにジャンプする機能を有効にする
+packadd! matchhit
+" rubyのendに移動する
+:let b:match_words="<begin>:<end>"
+:let b:match_words="<do>:<end>"
+:let b:match_words="<if>:<end>"
 
 
 "------------------------------------------------------------
@@ -187,7 +204,6 @@ set shiftwidth=2
 set softtabstop=2
 set expandtab
 
-
 augroup file-indents
   autocmd!
   autocmd FileType c setl ts=4 sw=4 sts=4 et
@@ -200,6 +216,7 @@ augroup END
 
 """ map {{{
 inoremap <silent> jj <Esc>
+imap <Nul> <Nop>
 
 " Yの動作をDやCと同じにする
 map Y y$
@@ -212,41 +229,23 @@ nnoremap j gj
 nnoremap k gk
 """ }}}
 
-""" plugin-settings {{{
-let g:mapleader = "\\"
-
-" denite {{{
-call denite#custom#var('file_rec', 'command',
-      \['ag', '--follow', '--nocolor', '--nogroup', '-g', ''])
-call denite#custom#var('grep', 'command', ['ag'])
-call denite#custom#var('grep', 'recursive_opts', [])
-call denite#custom#var('grep', 'pattern_opt', [])
-call denite#custom#var('grep', 'default_opts',
-      \['--follow', '--no-group', '--no-color'])
-call denite#custom#source('file_rec', 'matchers', ['matcher_fuzzy'])
-
-nmap <Space> [denite]
-noremap <silent> [denite] :<C-u>Denite file_rec<CR>
-
-" }}}
-
 " lightline {{{
 set laststatus=2
 let g:lightline = {
 \ 'colorscheme': 'iceberg',
 \ 'active': {
 \   'left': [ [ 'mode', 'paste' ],
-\             [ 'fugitive', 'readonly', 'filename', 'modified' ] ]
+\             [ 'branch', 'readonly', 'filename', 'modified' ] ]
 \ },
 \ 'component': {
 \   'readonly': '%{&filetype=="help"?"":&readonly?"✖":""}',
 \   'modified': '%{&filetype=="help"?"":&modified?"+":&modifiable?"":"-"}',
-\   'fugitive': '%{exists("*fugitive#head")?fugitive#head():""}'
+\   'branch': '%{gina#component#repo#branch()}'
 \ },
 \ 'component_visible_condition': {
 \   'readonly': '(&filetype!="help"&& &readonly)',
 \   'modified': '(&filetype!="help"&&(&modified||!&modifiable))',
-\   'fugitive': '(exists("*fugitive#head") && ""!=fugitive#head())'
+\   'branch': '(gina#component#repo#branch())'
 \ },
 \}
 " }}}
@@ -273,26 +272,174 @@ let g:quickrun_config = {
 nnoremap <expr><silent> <C-c> quickrun#is_running() ? quickrun#sweep_sessions() : "\<C-c>"
 "}}}
 
-"jedi-vim {{{
-" jediにvimの設定を任せると'completeopt+=preview'するので
-" 自動設定機能をOFFにし手動で設定を行う
-let g:jedi#completions_enabled = 0
-let g:jedi#auto_vim_configuration = 0
-" quickrunと被るため大文字に変更
-let g:jedi#rename_command = '<Leader>R'
+"Coc{{{
+" You will have bad experience for diagnostic messages when it's default 4000.
+set updatetime=300
+
+" don't give |ins-completion-menu| messages.
+set shortmess+=c
+
+" always show signcolumns
+set signcolumn=yes
+
+" coc extensions
+let g:coc_global_extensions = [
+   \ 'coc-pyright',
+   \ 'coc-solargraph',
+   \ 'coc-json',
+   \ 'coc-vetur',
+   \ 'coc-fzf-preview'
+   \ ]
+
+" Use tab for trigger completion with characters ahead and navigate.
+" Use command ':verbose imap <tab>' to make sure tab is not mapped by other plugin.
+inoremap <silent><expr> <TAB>
+      \ pumvisible() ? "\<C-n>" :
+      \ <SID>check_back_space() ? "\<TAB>" :
+      \ coc#refresh()
+inoremap <expr><S-TAB> pumvisible() ? "\<C-p>" : "\<C-h>"
+
+function! s:check_back_space() abort
+  let col = col('.') - 1
+  return !col || getline('.')[col - 1]  =~# '\s'
+endfunction
+
+" Use <c-space> to trigger completion.
+inoremap <silent><expr> <c-space> coc#refresh()
+
+" Use <cr> to confirm completion, `<C-g>u` means break undo chain at current position.
+" Coc only does snippet and additional edit on confirm.
+inoremap <expr> <cr> pumvisible() ? "\<C-y>" : "\<C-g>u\<CR>"
+" Or use `complete_info` if your vim support it, like:
+" inoremap <expr> <cr> complete_info()["selected"] != "-1" ? "\<C-y>" : "\<C-g>u\<CR>"
+
+" Use `[g` and `]g` to navigate diagnostics
+nmap <silent> [g <Plug>(coc-diagnostic-prev)
+nmap <silent> ]g <Plug>(coc-diagnostic-next)
+
+" Remap keys for gotos
+nmap <silent> gd <Plug>(coc-definition)
+nmap <silent> gy <Plug>(coc-type-definition)
+nmap <silent> gi <Plug>(coc-implementation)
+nmap <silent> gr <Plug>(coc-references)
+
+" Use K to show documentation in preview window
+nnoremap <silent> K :call <SID>show_documentation()<CR>
+
+function! s:show_documentation()
+  if (index(['vim','help'], &filetype) >= 0)
+    execute 'h '.expand('<cword>')
+  else
+    call CocAction('doHover')
+  endif
+endfunction
+
+" Highlight symbol under cursor on CursorHold
+autocmd CursorHold * silent call CocActionAsync('highlight')
+
+" Remap for rename current word
+nmap <leader>rn <Plug>(coc-rename)
+
+" Remap for format selected region
+xmap <leader>f  <Plug>(coc-format-selected)
+nmap <leader>f  <Plug>(coc-format-selected)
+
+augroup mygroup
+  autocmd!
+  " Setup formatexpr specified filetype(s).
+  autocmd FileType typescript,json setl formatexpr=CocAction('formatSelected')
+  " Update signature help on jump placeholder
+  autocmd User CocJumpPlaceholder call CocActionAsync('showSignatureHelp')
+augroup end
+
+" Remap for do codeAction of selected region, ex: `<leader>aap` for current paragraph
+xmap <leader>a  <Plug>(coc-codeaction-selected)
+nmap <leader>a  <Plug>(coc-codeaction-selected)
+
+" Remap for do codeAction of current line
+nmap <leader>ac  <Plug>(coc-codeaction)
+" Fix autofix problem of current line
+nmap <leader>qf  <Plug>(coc-fix-current)
+
+" Create mappings for function text object, requires document symbols feature of languageserver.
+
+xmap if <Plug>(coc-funcobj-i)
+xmap af <Plug>(coc-funcobj-a)
+omap if <Plug>(coc-funcobj-i)
+omap af <Plug>(coc-funcobj-a)
+
+" Use <C-d> for select selections ranges, needs server support, like: coc-tsserver, coc-python
+nmap <silent> <C-d> <Plug>(coc-range-select)
+xmap <silent> <C-d> <Plug>(coc-range-select)
+
+" Use `:Format` to format current buffer
+command! -nargs=0 Format :call CocAction('format')
+
+" Use `:Fold` to fold current buffer
+command! -nargs=? Fold :call     CocAction('fold', <f-args>)
+
+" use `:OR` for organize import of current buffer
+command! -nargs=0 OR   :call     CocAction('runCommand', 'editor.action.organizeImport')
+
+" Add status line support, for integration with other plugin, checkout `:h coc-status`
+set statusline^=%{coc#status()}%{get(b:,'coc_current_function','')}
+
+" Using CocList
+" Show all diagnostics
+nnoremap <silent> <space>a  :<C-u>CocList diagnostics<cr>
+" Manage extensions
+nnoremap <silent> <space>e  :<C-u>CocList extensions<cr>
+" Show commands
+nnoremap <silent> <space>c  :<C-u>CocList commands<cr>
+" Find symbol of current document
+nnoremap <silent> <space>o  :<C-u>CocList outline<cr>
+" Search workspace symbols
+nnoremap <silent> <space>s  :<C-u>CocList -I symbols<cr>
+" Do default action for next item.
+nnoremap <silent> <space>j  :<C-u>CocNext<CR>
+" Do default action for previous item.
+nnoremap <silent> <space>k  :<C-u>CocPrev<CR>
+" Resume latest coc list
+nnoremap <silent> <space>p  :<C-u>CocListResume<CR>
+
 "}}}
 
-" deoplete {{{
-let g:deoplete#enable_at_startup = 1
-inoremap <expr><tab> pumvisible() ? "\<C-n>" :
-        \ neosnippet#expandable_or_jumpable() ?
-        \    "\<Plug>(neosnippet_expand_or_jump)" : "\<tab>"
+" fzf-preview {{{
+nnoremap <fzf-p> <Nop>
+
+xnoremap <fzf-p> <Nop>
+
+nmap     <space>	<fzf-p>
+
+xmap     <space>  <fzf-p>
+
+nnoremap <silent> <fzf-p>r     :<C-u>CocCommand fzf-preview.FromResources buffer project_mru<CR>
+
+nnoremap <silent> <fzf-p>w     :<C-u>CocCommand fzf-preview.ProjectMrwFiles<CR>
+
+nnoremap <silent> <fzf-p>a     :<C-u>CocCommand fzf-preview.FromResources project_mru git<CR>
+
+nnoremap <silent> <fzf-p>s     :<C-u>CocCommand fzf-preview.GitStatus<CR>
+
+nnoremap <silent> <fzf-p>gg    :<C-u>CocCommand fzf-preview.GitActions<CR>
+
+nnoremap <silent> <fzf-p>b     :<C-u>CocCommand fzf-preview.Buffers<CR>
+
+nnoremap <silent> <fzf-p>/     :<C-u>CocCommand fzf-preview.Lines --resume --add-fzf-arg=--no-sort<CR>
+
+nnoremap <silent> <fzf-p>*     :<C-u>CocCommand fzf-preview.Lines --add-fzf-arg=--no-sort --add-fzf-arg=--query="<C-r>=expand('<cword>')<CR>"<CR>
+
+xnoremap <silent> <fzf-p>*     "sy:CocCommand fzf-preview.Lines --add-fzf-arg=--no-sort --add-fzf-arg=--query="<C-r>=substitute(@s, '\(^\\v\)\\|\\\(<\\|>\)', '', 'g')<CR>"<CR>
+
+nnoremap <silent> <fzf-p>q     :<C-u>CocCommand fzf-preview.QuickFix<CR>
+
+nnoremap <silent> <fzf-p>l     :<C-u>CocCommand fzf-preview.LocationList<CR>
+
+nnoremap          <fzf-p>f     :<C-u>CocCommand fzf-preview.ProjectGrep --add-fzf-arg=--exact --add-fzf-arg=--no-sort<Space>
+
+xnoremap          <fzf-p>f     "sy:CocCommand fzf-preview.ProjectGrep --add-fzf-arg=--exact --add-fzf-arg=--no-sort<Space>-F<Space>"<C-r>=substitute(substitute(@s, '\n', '', 'g'), '/', '\\/', 'g')<CR>"
+
+nnoremap <silent> <fzf-p>F     :<C-u>CocCommand fzf-preview.ProjectGrepRecall --add-fzf-arg=--exact --add-fzf-arg=--no-sort --resume<CR>
 " }}}
 
-"ALE{{{
-let g:ale_sign_column_always = 0
-let g:ale_linters = {
-\ 'python': ['flake8', 'mypy']
-\}
-"}}}
 """ }}}
