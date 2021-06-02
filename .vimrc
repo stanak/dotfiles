@@ -1,5 +1,4 @@
 filetype off
-set shell=/bin/bash
 set encoding=utf-8
 set fileformats=unix,dos,mac
 set fileencodings=ucs-bom,utf-8,iso-2022-jp,eucjp-ms,euc-jp,sjis,cp932,latin-1
@@ -49,7 +48,7 @@ call plug#begin('~/.vim/plugged')
   Plug 'Shougo/neomru.vim'
   "Plug 'Shougo/neosnippet'
   "Plug 'Shougo/neosnippet-snippets'
-  Plug 'neoclide/coc.nvim', {'branch': 'release'}
+  Plug 'neoclide/coc.nvim', {'branch': 'master', 'do': 'yarn install --frozen-lockfile'}
 
   " colorscheme
   Plug 'itchyny/lightline.vim'
@@ -71,6 +70,7 @@ call plug#begin('~/.vim/plugged')
   Plug 'tyru/open-browser-github.vim'
 
   " fzf-preview
+  Plug 'yuki-yano/fzf-preview.vim', { 'branch': 'release/rpc' }
   Plug 'junegunn/fzf'
 	Plug 'lambdalisue/gina.vim'
 
@@ -147,7 +147,7 @@ if system('uname -a | grep microsoft') != ''
 endif
 
 " %による対応タグ、ブレースにジャンプする機能を有効にする
-packadd! matchhit
+packadd! matchit
 " rubyのendに移動する
 :let b:match_words="<begin>:<end>"
 :let b:match_words="<do>:<end>"
@@ -288,7 +288,6 @@ let g:coc_global_extensions = [
    \ 'coc-solargraph',
    \ 'coc-json',
    \ 'coc-vetur',
-   \ 'coc-fzf-preview'
    \ ]
 
 " Use tab for trigger completion with characters ahead and navigate.

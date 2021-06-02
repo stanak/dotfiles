@@ -1,0 +1,7 @@
+{
+  "python.linting.flake8Enabled": true,
+  "python.linting.mypyEnabled": true,
+  "vetur.validation.templateProps": true,
+  "solargraph.useBundler": true,
+  "solargraph.diagnostics": true
+}
