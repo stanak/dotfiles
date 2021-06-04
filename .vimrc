@@ -63,7 +63,7 @@ call plug#begin('~/.vim/plugged')
   Plug 'junegunn/vim-easy-align'
 
 
-  "Plug 'w0rp/ale'
+  Plug 'w0rp/ale'
   Plug 'Yggdroot/indentLine'
   Plug 'bronson/vim-trailing-whitespace'
   Plug 'tyru/open-browser.vim'
@@ -229,6 +229,7 @@ nnoremap j gj
 nnoremap k gk
 """ }}}
 
+"Plugin Setting {{{
 " lightline {{{
 set laststatus=2
 let g:lightline = {
@@ -270,6 +271,15 @@ let g:quickrun_config = {
 
 " C-cで実行を強制終了、実行していない場合はC-cを呼び出す
 nnoremap <expr><silent> <C-c> quickrun#is_running() ? quickrun#sweep_sessions() : "\<C-c>"
+"}}}
+
+"ALE{{{
+
+let g:ale_sign_column_always = 0
+let g:ale_linters = {
+\ 'python': ['flake8', 'mypy'],
+\ 'ruby': ['rubocop']
+\}
 "}}}
 
 "Coc{{{
