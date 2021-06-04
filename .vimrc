@@ -419,7 +419,8 @@ nnoremap <silent> <fzf-p>s     :<C-u>FzfPreviewGitStatusRpc<CR>
 nnoremap <silent> <fzf-p>gg    :<C-u>FzfPreviewGitActionsRpc<CR>
 nnoremap <silent> <fzf-p>b     :<C-u>FzfPreviewBuffersRpc<CR>
 nnoremap <silent> <fzf-p>/     :<C-u>FzfPreviewLinesRpc --resume --add-fzf-arg=--no-sort<CR>
-nnoremap <silent> <fzf-p>*     :<C-u>FzfPreviewLinesRpc --add-fzf-arg=--no-sort --add-fzf-arg=--query="<C-r>=expand('<cword>')<CR>"<CR>
+" nnoremap <silent> <fzf-p>*     :<C-u>FzfPreviewLinesRpc --add-fzf-arg=--no-sort --add-fzf-arg=--query="<C-r>=expand('<cword>')<CR>"<CR>
+nnoremap <silent> <fzf-p>*     :<C-u>CocCommand fzf-preview.ProjectGrep --add-fzf-arg=--exact --add-fzf-arg=--no-sort<Space>-F<Space>"<C-r>=expand('<cword>')<CR>"<CR>
 xnoremap <silent> <fzf-p>*     "sy:FzfPreviewLinesRpc --add-fzf-arg=--no-sort --add-fzf-arg=--query="<C-r>=substitute(@s, '\(^\\v\)\\|\\\(<\\|>\)', '', 'g')<CR>"<CR>
 nnoremap <silent> <fzf-p>q     :<C-u>FzfPreviewQuickFixRpc<CR>
 nnoremap <silent> <fzf-p>l     :<C-u>FzfPreviewLocationListRpc<CR>
