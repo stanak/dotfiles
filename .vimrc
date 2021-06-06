@@ -140,11 +140,22 @@ set notimeout ttimeout ttimeoutlen=200
 
 " Windows Subsystem for Linux で、ヤンクでクリップボードにコピー
 if system('uname -a | grep microsoft') != ''
-  augroup myYank
+  augroup wsl-yank
     autocmd!
     autocmd TextYankPost * :call system('echo '.shellescape(join(v:event.regcontents, "\<CR>")).' | clip.exe')
   augroup END
 endif
+
+augroup vimrc-auto-mkdir
+  autocmd!
+  autocmd BufWritePre * call s:auto_mkdir(expand('<afile>:p:h'), v:cmdbang)
+  function! s:auto_mkdir(dir, force)
+    if !isdirectory(a:dir) && (a:force ||
+    \    input(printf('"%s" does not exist. Create? [y/N]', a:dir)) =~? '^y\%[es]$')
+      call mkdir(iconv(a:dir, &encoding, &termencoding), 'p')
+    endif
+  endfunction
+augroup END
 
 " %による対応タグ、ブレースにジャンプする機能を有効にする
 packadd! matchit
@@ -274,7 +285,6 @@ nnoremap <expr><silent> <C-c> quickrun#is_running() ? quickrun#sweep_sessions() 
 "}}}
 
 "ALE{{{
-
 let g:ale_sign_column_always = 0
 let g:ale_linters = {
 \ 'python': ['flake8', 'mypy'],

@@ -1,6 +1,9 @@
 shell:
   program: /Windows/System32/wsl.exe ~ -d Ubuntu-20.04
 
+env:
+  TERM:xterm-256color
+
 font:
   normal:
     family: Ricty Diminished
@@ -39,9 +42,8 @@ colors:
 
 window:
   decorations: full         # ボーダーとタイトルバーを表示する
-	startup_mode: Fullscreen  # フルスクリーンで起動する
-
-background_opacity: 0.7    # 背景を透過させる
+  startup_mode: Fullscreen  # フルスクリーンで起動する
+  dynamic_title: true #ターミナルアプリケーションがウインドウ名を変更することを許可
 
 mouse:
   double_click: { threshold: 300 }
