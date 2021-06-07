@@ -1,5 +1,5 @@
 env:
-  TERM:xterm-256color
+  TERM: xterm-256color
 
 font:
   normal:
@@ -50,6 +50,11 @@ mouse:
 mouse_bindings:
   - { mouse: Left,  mods: Shift, action: Copy }
   - { mouse: Right, mods: Shift, action: Paste }
+
+selection:
+  semantic_escape_chars: ",│`|:\"' ()[]{}<>\t"
+
+alt_send_esc: false
 
 key_bindings:
   - { key: Q,        mods: Command,       action: Quit                        }
