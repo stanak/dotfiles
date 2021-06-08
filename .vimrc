@@ -135,8 +135,8 @@ set mouse=a
 set notimeout ttimeout ttimeoutlen=200
 
 " ambiwidthを上書きする主に二文字分を取る全角記号対策
-" 環境変えたら何も変えずに直ったので備忘録に置いとく
-" setcellwidths([])
+" gaで文字を調べることができる。関連:nr2char(), i_CTRL_V_digit
+":call setcellwidths([[0x2190, 0x23fa,  2]])
 
 " Windows Subsystem for Linux で、ヤンクでクリップボードにコピー
 if system('uname -a | grep microsoft') != ''
@@ -305,9 +305,9 @@ set signcolumn=yes
 " coc extensions
 let g:coc_global_extensions = [
    \ 'coc-pyright',
-   \ 'coc-solargraph',
    \ 'coc-json',
    \ 'coc-vetur',
+   \ 'coc-tabnine',
    \ ]
 
 " Use tab for trigger completion with characters ahead and navigate.
@@ -402,25 +402,6 @@ command! -nargs=0 OR   :call     CocAction('runCommand', 'editor.action.organize
 
 " Add status line support, for integration with other plugin, checkout `:h coc-status`
 set statusline^=%{coc#status()}%{get(b:,'coc_current_function','')}
-
-" Using CocList
-" Show all diagnostics
-"nnoremap <silent> <space>a  :<C-u>CocList diagnostics<cr>
-"" Manage extensions
-"nnoremap <silent> <space>e  :<C-u>CocList extensions<cr>
-"" Show commands
-"nnoremap <silent> <space>c  :<C-u>CocList commands<cr>
-"" Find symbol of current document
-"nnoremap <silent> <space>o  :<C-u>CocList outline<cr>
-"" Search workspace symbols
-"nnoremap <silent> <space>s  :<C-u>CocList -I symbols<cr>
-"" Do default action for next item.
-"nnoremap <silent> <space>j  :<C-u>CocNext<CR>
-"" Do default action for previous item.
-"nnoremap <silent> <space>k  :<C-u>CocPrev<CR>
-"" Resume latest coc list
-"nnoremap <silent> <space>p  :<C-u>CocListResume<CR>
-"
 "}}}
 
 " fzf-preview {{{

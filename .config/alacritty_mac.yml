@@ -56,6 +56,7 @@ selection:
 
 alt_send_esc: false
 
+# Command+Vは貼り付け用に除外した
 key_bindings:
   - { key: Q,        mods: Command,       action: Quit                        }
   - { key: Key0,     mods: Command,       action: ResetFontSize               }
@@ -85,7 +86,6 @@ key_bindings:
   - { key: S,        mods: Command,       chars: "\x1bs"                      }
   - { key: T,        mods: Command,       chars: "\x1bt"                      }
   - { key: U,        mods: Command,       chars: "\x1bu"                      }
-  - { key: V,        mods: Command,       chars: "\x1bv"                      }
   - { key: W,        mods: Command,       chars: "\x1bw"                      }
   - { key: X,        mods: Command,       chars: "\x1bx"                      }
   - { key: Y,        mods: Command,       chars: "\x1by"                      }
