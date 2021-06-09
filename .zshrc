@@ -2,14 +2,13 @@
 export LANG="ja_JP.UTF-8"
 export PATH="$HOME/.nodenv/bin:$PATH"
 source ~/.zsh_profile
-autoload ~/companyutil
 
 # Use modern completion system
 autoload -Uz compinit promptinit
 
 # Ctrl+n or Ctrl+p で履歴補完
-autoload -U up-line-or-beginning-search
-autoload -U down-line-or-beginning-search
+autoload -Uz up-line-or-beginning-search
+autoload -Uz down-line-or-beginning-search
 zle -N up-line-or-beginning-search
 zle -N down-line-or-beginning-search
 bindkey "^N" up-line-or-beginning-search
@@ -32,7 +31,7 @@ HISTSIZE=100000
 SAVEHIST=100000
 HISTFILE=~/.zsh_history
 
-# 補完関数の表示を強化する
+# あまりよくわかってないけど補完関数の表示を強化する
 zstyle ':completion:*' verbose yes
 zstyle ':completion:*' completer _expand _complete _match _prefix _approximate _list _history
 zstyle ':completion:*:messages' format '%F{YELLOW}%d'$DEFAULT
@@ -48,13 +47,9 @@ zstyle ':completion:*' group-name ''
 zstyle ':completion:*' list-separator '-->'
 zstyle ':completion:*:manuals' separate-sections true
 
-# 補完候補をハイライト
+# 補完候補が2つ以上なければすぐ補完
 zstyle ':completion:*' menu select=2
 
-eval "$(dircolors -b)"
-zstyle ':completion:*:default' list-colors ${(s.:.)LS_COLORS}
-zstyle ':completion:*' list-colors ''
-zstyle ':completion:*' list-prompt %SAt %p: Hit TAB for more, or the character to insert%s
 zstyle ':completion:*' matcher-list '' 'm:{a-z}={A-Z}' 'm:{a-zA-Z}={A-Za-z}' 'r:|[._-]=* r:|=* l:|=*'
 zstyle ':completion:*' menu select=long
 zstyle ':completion:*' select-prompt %SScrolling active: current selection at %p%s
