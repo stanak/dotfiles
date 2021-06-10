@@ -138,6 +138,9 @@ set notimeout ttimeout ttimeoutlen=200
 " gaで文字を調べることができる。関連:nr2char(), i_CTRL_V_digit
 ":call setcellwidths([[0x2190, 0x23fa,  2]])
 
+" pasteモードを自動で抜ける
+autocmd InsertLeave * set nopaste
+
 " Windows Subsystem for Linux で、ヤンクでクリップボードにコピー
 if system('uname -a | grep microsoft') != ''
   augroup wsl-yank
