@@ -6,6 +6,9 @@ source ~/.zsh_profile
 # Use modern completion system
 autoload -Uz compinit promptinit
 
+# viキーバインド
+bindkey -v
+
 # Ctrl+n or Ctrl+p で履歴補完
 autoload -Uz up-line-or-beginning-search
 autoload -Uz down-line-or-beginning-search
@@ -13,6 +16,8 @@ zle -N up-line-or-beginning-search
 zle -N down-line-or-beginning-search
 bindkey "^N" up-line-or-beginning-search
 bindkey "^P" down-line-or-beginning-search
+
+PROMPT='%m:%~$ '
 
 # 同じコマンドを入れても履歴としては1回しか出ないように
 setopt histignorealldups
@@ -22,9 +27,6 @@ setopt sharehistory
 
 # エイリアスで自動補完を切り替える
 setopt completealiases
-
-# viキーバインド
-bindkey -v
 
 # 履歴を100000確保する
 HISTSIZE=100000
