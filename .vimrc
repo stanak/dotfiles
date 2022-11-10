@@ -6,6 +6,8 @@ set nofixendofline
 scriptencoding utf-8
 set helplang=ja
 let g:vim_indent_cont=3
+let g:python_host_prog = system('(type pyenv &>/dev/null && echo -n "$(pyenv root)/versions/$(pyenv global | grep python2)/bin/python") || echo -n $(which python2)')
+let g:python3_host_prog = system('echo -n $(which python3)')
 
 " auto reload vimrc
 augroup reload-vimrc
@@ -20,6 +22,11 @@ augroup MyTagComp
   autocmd Filetype html inoremap <buffer> </ </<C-x><C-o><Esc>V=
   autocmd Filetype vue inoremap <buffer> </ </<C-x><C-o><Esc>V=
 augroup END
+
+if executable('rg')
+  set grepprg=rg\ --vimgrep\ --smart-case\
+  set grepformat=%f:%l:%c:%m,%f:%l:%m
+end
 
 """ plugins{{{
 if has('vim_starting')
@@ -40,10 +47,11 @@ call plug#begin('~/.vim/plugged')
   Plug 'mattn/learn-vimscript'
 
   " library
-  "Plug 'Shougo/vimproc.vim',
-  "      \ { 'dir': '~/.vim/plugged/vimproc.vim',
-  "      \   'do': 'make'}
-
+  Plug 'Shougo/vimproc.vim',
+        \ { 'dir': '~/.vim/plugged/vimproc.vim',
+        \   'do': 'make'}
+  Plug 't9md/vim-quickhl'
+  Plug 'mbbill/undotree'
   Plug 'Shougo/neoyank.vim'
   Plug 'Shougo/neomru.vim'
   "Plug 'Shougo/neosnippet'
@@ -57,6 +65,7 @@ call plug#begin('~/.vim/plugged')
   "python
   Plug 'Vimjas/vim-python-pep8-indent',
   Plug 'msmhrt/py3venv.vim',
+  Plug 'meatballs/vim-xonsh'
 
 
   Plug 'thinca/vim-quickrun'
@@ -142,12 +151,12 @@ set notimeout ttimeout ttimeoutlen=200
 autocmd InsertLeave * set nopaste
 
 " Windows Subsystem for Linux で、ヤンクでクリップボードにコピー
-if system('uname -a | grep microsoft') != ''
-  augroup wsl-yank
-    autocmd!
-    autocmd TextYankPost * :call system('echo '.shellescape(join(v:event.regcontents, "\<CR>")).' | clip.exe')
-  augroup END
-endif
+"if system('uname -a | grep microsoft') != ''
+"  augroup wsl-yank
+"    autocmd!
+"    autocmd TextYankPost * :call system('echo '.shellescape(join(v:event.regcontents, "\<CR>")).' | clip.exe')
+"  augroup END
+"endif
 
 augroup vimrc-auto-mkdir
   autocmd!
@@ -244,6 +253,25 @@ nnoremap k gk
 """ }}}
 
 "Plugin Setting {{{
+" undotree {{{
+nnoremap U :UndotreeToggle<CR>
+if has("persistent_undo")
+   let target_path = expand('~/.undodir')
+    " create the directory and any parent directories
+    " if the location does not exist.
+    if !isdirectory(target_path)
+        call mkdir(target_path, "p", 0700)
+    endif
+    let &undodir=target_path
+    set undofile
+endif
+" }}}
+" vim-quickhl {{{
+nmap <Space>m <Plug>(quickhl-manual-this)
+xmap <Space>m <Plug>(quickhl-manual-this)
+nmap <Space>M <Plug>(quickhl-manual-reset)
+xmap <Space>M <Plug>(quickhl-manual-reset)
+" }}}
 " lightline {{{
 set laststatus=2
 let g:lightline = {
@@ -266,16 +294,16 @@ let g:lightline = {
 " }}}
 
 " vim-quickrun {{{
+nnoremap <leader>r :QuickRun<CR>
 let g:quickrun_config = {
 \ "_" : {
 \   "outputter/buffer/split" : ":botright 8sp",
-\   "outputter/error/success" : "buffer",
+\   "outputter/error/success" : "quickfix",
 \   "outputter/error/error" : "quickfix",
 \   "outputter/buffer/close_on_empty" : 1,
 \   "outputter/quickfix/errorformat" : "%f:%l,%m in %f on line %l",
 \   "outputter" : "error",
 \   "hook/time/enable" : 1,
-\   "runner" : "vimproc",
 \   "runner/vimproc/updatetime" : 500,
 \ },
 \ "python" : {
