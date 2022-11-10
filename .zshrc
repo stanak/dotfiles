@@ -49,7 +49,6 @@ zinit light zsh-users/zsh-completions
 zinit light chrissicool/zsh-256color
 
 # required fzf
-zinit ice pick"init.sh"
 zinit light b4b4r07/enhancd
 
 # required: deno, fzf, opitional: ghq
