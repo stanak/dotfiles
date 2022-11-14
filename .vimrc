@@ -42,6 +42,8 @@ call plug#begin('~/.vim/plugged')
   Plug 'junegunn/vim-plug',
         \ {'dir': '~/.vim/plugged/vim-plug/autoload'}
 
+  Plug 'chrisbra/csv.vim'
+
   " docs
   Plug 'vim-jp/vimdoc-ja'
   Plug 'mattn/learn-vimscript'
