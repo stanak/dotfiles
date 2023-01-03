@@ -1,0 +1,36 @@
+import xonsh.xontribs
+
+xontrib load autovox
+xontrib load bashisms
+xontrib load fish_completer
+xontrib load free_cwd
+xontrib load pdb
+xontrib load vox
+xontrib load sh
+xontrib load fzf-widgets
+xontrib load readable-traceback
+
+#xontribs = [
+#    'z',
+#    'docker_tabcomplete',
+#    'fzf-widgets',
+#    'sh',
+#    'vox',
+#    'auto-vox',
+#    'readable_traceback',
+#    'coreutils'
+#    ]
+#for package in xontribs:
+#    xpip install package
+#xontrib load z
+#xontrib load docker_tabcomplete
+#xontrib load sh # execute as bash  $! echo hello
+#xontrib load vox
+#xontrib load z
+#$READABLE_TRACE_STRIP_PATH_ENV=True
+#$READABLE_TRACE_REVERSE=True
+#xontrib load coreutils
+
+$VI_MODE = True # emacsキーバインド派なので
+$XONSH_COLOR_STYLE = 'native' # みんな使ってるっぽいカラースタイル
+$XONSH_SHOW_TRACEBACK = True # エラー時にトレースを全部吐かせる
