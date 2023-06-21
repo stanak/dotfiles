@@ -2,6 +2,39 @@
   "python.linting.flake8Enabled": true,
   "python.linting.mypyEnabled": true,
   "vetur.validation.templateProps": true,
-  "solargraph.useBundler": true,
-  "solargraph.diagnostics": true
+  "languageserver": {
+    "sorbet": {
+      "command": "srb",
+      "args": ["tc", "--typed", "true", "--enable-all-experimental-lsp-features", "--lsp", "--disable-watchman"],
+      "filetypes": ["ruby"],
+      "rootPatterns": ["sorbet/config"],
+      "initializationOptions": {},
+      "settings": {}
+    },
+    "typeprof": {
+      "command": "typeprof",
+      "args": ["--lsp", "--stdio"],
+      "filetypes": ["ruby"]
+    },
+    "ruby-lsp": {
+      "command": "ruby-lsp",
+      "initializationOptions": {
+        "enabledFeatures": [
+          "codeActions",
+          "diagnostics",
+          "documentHighlights",
+          "documentLink",
+          "documentSymbols",
+          "foldingRanges",
+          "formatting",
+          "hover",
+          "inlayHint",
+          "onTypeFormatting",
+          "selectionRanges"
+        ]
+      },
+      "filetypes": ["ruby"]
+    }
+  }
+
 }
