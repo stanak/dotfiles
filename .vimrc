@@ -42,7 +42,7 @@ call plug#begin('~/.vim/plugged')
   Plug 'junegunn/vim-plug',
         \ {'dir': '~/.vim/plugged/vim-plug/autoload'}
 
-  Plug 'chrisbra/csv.vim'
+  Plug 'glidenote/memolist.vim'
 
   " docs
   Plug 'vim-jp/vimdoc-ja'

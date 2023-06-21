@@ -94,3 +94,4 @@ fi
 
 
 source ~/.zsh_profile
+source ~/companyutil.sh
